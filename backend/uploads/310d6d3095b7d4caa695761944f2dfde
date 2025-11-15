@@ -1,0 +1,57 @@
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> nge(vector<int>&nums){
+
+  vector<int>result(nums.size());
+  
+  stack<int>st;
+  for(int i= nums.size()-1;  i>=0 ; i--){
+      while(!st.empty() && st.top()<nums[i]){
+          st.pop();
+      }
+      if(st.empty()){
+        result[i]=-1;
+      }else{
+        result[i]=st.top();
+      }
+      
+      st.push(nums[i]);
+  }
+  
+  return result;
+}
+
+vector<int> nse(vector<int>&nums){
+
+  vector<int>result(nums.size());
+  
+  stack<int>st;
+  for(int i= nums.size()-1;  i>=0 ; i--){
+      while(!st.empty() && st.top() > nums[i]){
+          st.pop();
+      }
+      if(st.empty()){
+        result[i]=-1;
+      }else{
+        result[i]=st.top();
+      }
+      
+      st.push(nums[i]);
+  }
+  
+  return result;
+}
+
+
+
+int main(){
+    vector<int>nums = { 3, 10 ,4 ,2, 1, 2, 6 ,1, 7 ,2 ,9};
+    vector<int>result= nse(nums);
+    for(auto i : result){
+      cout<<i<<" ";
+    }
+    return 0;
+}

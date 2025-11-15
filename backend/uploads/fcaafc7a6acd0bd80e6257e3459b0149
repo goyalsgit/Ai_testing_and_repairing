@@ -1,0 +1,138 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int minimumCostPath(vector<vector<int>>& grid) {
+        int n = grid.size();
+
+        // Min-heap: {cost, {x, y}}
+        priority_queue<pair<int, pair<int, int>>,
+                       vector<pair<int, pair<int, int>>>,
+                       greater<pair<int, pair<int, int>>>> pq;
+
+        // Distance matrix initialized to infinity
+        vector<vector<int>> dist(n, vector<int>(n, INT_MAX));
+
+        // 8 possible directions (diagonal + straight)
+        vector<pair<int, int>> directions = {
+            {-1, -1}, {-1, 0}, {-1, 1},
+            {0, -1},           {0, 1},
+            {1, -1},  {1, 0},  {1, 1}
+        };
+
+        // Start from top-left cell
+        dist[0][0] = grid[0][0];
+        pq.push({grid[0][0], {0, 0}});
+
+        while (!pq.empty()) {
+            auto it = pq.top();
+            pq.pop();
+
+            int cost = it.first;
+            int x = it.second.first;
+            int y = it.second.second;
+
+            // If we reached bottom-right cell, return cost
+            if (x == n - 1 && y == n - 1)
+                return cost;
+
+            // Skip if this path is not optimal anymore
+            if (cost > dist[x][y]) continue;
+
+            // Explore all directions
+            for (auto dir : directions) {
+                int nx = x + dir.first;
+                int ny = y + dir.second;
+
+                if (nx >= 0 && ny >= 0 && nx < n && ny < n) {
+                    int newCost = cost + grid[nx][ny];
+                    if (newCost < dist[nx][ny]) {
+                        dist[nx][ny] = newCost;
+                        pq.push({newCost, {nx, ny}});
+                    }
+                }
+            }
+        }
+
+        // If no path (theoretically shouldn't happen for valid input)
+        return -1;
+    }
+};
+
+// -------------------- MAIN FUNCTION --------------------
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cout << "Enter grid size (n): ";
+    cin >> n;
+
+    vector<vector<int>> grid(n, vector<int>(n));
+    cout << "Enter grid values:\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> grid[i][j];
+        }
+    }
+
+    Solution sol;
+    int result = sol.minimumCostPath(grid);
+
+    cout << "\nMinimum cost from (0,0) to (" << n - 1 << "," << n - 1 << ") = " << result << "\n";
+
+    return 0;
+}
+
+
+
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+
+        int n = heights.size();
+        int m = heights[0].size();
+        
+
+        vector<vector<int>> dist(n, vector<int>(m, 1e9));
+        dist[0][0] = 0;
+        priority_queue<pair<int,pair<int,int>> ,
+        vector<pair<int, pair<int,int>>>, greater<pair<int,pair<int,int>>> >pq;
+
+        pq.push({0,{0,0}});
+
+        int dr[] = {-1, 0, 1, 0};
+        int dc[] = {0, 1, 0, -1};
+
+        while(!pq.empty()){
+            auto node = pq.top();
+            pq.pop();
+            int eff= node.first;
+            int x=  node.second.first;
+            int y = node.second.second;
+
+            if(x == n-1&& y== m-1){
+                return eff;
+            }
+
+            for(int i=0 ; i<4; i++){
+                int nx= x + dr[i];
+                int ny = y+ dc[i];
+
+                if(nx>=0 && nx<n && ny>=0 && ny<m){
+                    int neff = max(abs(heights[x][y] - heights[nx][ny]),eff);
+
+                    if(neff < dist[nx][ny]){
+                        dist[nx][ny] = neff;
+                        pq.push({neff,{nx,ny}});
+                    }
+                }
+            }
+
+        }
+
+        return 0;
+        
+    }
+};
